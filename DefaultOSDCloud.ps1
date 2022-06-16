@@ -25,7 +25,7 @@ Import-Module OSD -Force
 switch ($input)
 {
     '1' { Start-OSDCloud -OSLanguage en-gb -OSBuild 20H2 -OSEdition Enterprise -ZTI } 
-    '2' { Start-OSDCloud -OSLanguage en-gb -OSBuild 21H2 -OSEdition Enterprise -ZTI } 
+    '2' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 10 21H2 x64' -OSEdition Enterprise -ZTI } 
     '3' { Start-OSDCloudGUI	} 
     '4' { Exit }
 }
