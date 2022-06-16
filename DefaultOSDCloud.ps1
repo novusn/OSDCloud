@@ -10,8 +10,9 @@ cls
 Write-Host "===================== Main Menu =======================" -ForegroundColor Yellow
 Write-Host "1: Zero-Touch WIN10 20H2 | en-gb | Enterprise"-ForegroundColor Yellow
 Write-Host "2: Zero-Touch WIN10 21H2 | en-gb | Enterprise" -ForegroundColor Yellow
-Write-Host "3: OSDCloudGUI | Testing" -ForegroundColor Yellow
-Write-Host "4: Exit" -ForegroundColor Yellow
+Write-Host "3: Zero-Touch WIN11 21H2 | en-gb | Enterprise" -ForegroundColor Yellow
+Write-Host "4: OSDCloudGUI | Testing" -ForegroundColor Yellow
+Write-Host "5: Exit" -ForegroundColor Yellow
 $input = Read-Host "Please make a selection"
 Write-Host  -ForegroundColor Yellow "Loading OSDCloud..."
 
@@ -24,10 +25,11 @@ Import-Module OSD -Force
 
 switch ($input)
 {
-    '1' { Start-OSDCloud -OSLanguage en-gb -OSBuild 20H2 -OSEdition Enterprise -ZTI } 
+    '1' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 10 20H2 x64' -OSEdition Enterprise -ZTI } 
     '2' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 10 21H2 x64' -OSEdition Enterprise -ZTI } 
-    '3' { Start-OSDCloudGUI	} 
-    '4' { Exit }
+    '3' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 21H2 x64' -OSEdition Enterprise -ZTI } 
+    '4' { Start-OSDCloudGUI	} 
+    '5' { Exit }
 }
 
 #Restart from WinPE
