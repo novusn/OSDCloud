@@ -9,15 +9,15 @@ if ((Get-MyComputerModel) -match 'Virtual') {
 cls
 Write-Host "===================== Main Menu =======================" -ForegroundColor Yellow
 Write-Host "1: Zero-Touch WIN10 21H2 | en-gb | Education"-ForegroundColor Yellow
-Write-Host "2: Zero-Touch WIN10 21H2 | en-gb | Enterprise"-ForegroundColor Yellow
+Write-Host "2: Zero-Touch WIN10 21H2 | en-gb | Enterprise"-ForegroundColor Green
 Write-Host "3: Zero-Touch WIN10 22H2 | en-gb | Education" -ForegroundColor Yellow
-Write-Host "4: Zero-Touch WIN10 22H2 | en-gb | Enterprise" -ForegroundColor Yellow
+Write-Host "4: Zero-Touch WIN10 22H2 | en-gb | Enterprise" -ForegroundColor Green
 Write-Host "5: Zero-Touch WIN11 21H2 | en-gb | Education" -ForegroundColor Yellow
-Write-Host "6: Zero-Touch WIN11 21H2 | en-gb | Enterprise" -ForegroundColor Yellow
+Write-Host "6: Zero-Touch WIN11 21H2 | en-gb | Enterprise" -ForegroundColor Green
 Write-Host "7: Zero-Touch WIN11 22H2 | en-gb | Education" -ForegroundColor Yellow
-Write-Host "8: Zero-Touch WIN11 22H2 | en-gb | Enterprise" -ForegroundColor Yellow
+Write-Host "8: Zero-Touch WIN11 22H2 | en-gb | Enterprise" -ForegroundColor Green
 Write-Host "9: OSDCloudGUI | Testing" -ForegroundColor Yellow
-Write-Host "0: Exit" -ForegroundColor Yellow
+Write-Host "0: Exit" -ForegroundColor Red
 $input = Read-Host "Please make a selection"
 Write-Host  -ForegroundColor Yellow "Loading OSDCloud..."
 
