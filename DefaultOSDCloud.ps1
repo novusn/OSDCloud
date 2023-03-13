@@ -16,7 +16,7 @@ Write-Host "5: Zero-Touch WIN11 21H2 | en-gb | Education" -ForegroundColor Yello
 Write-Host "6: Zero-Touch WIN11 21H2 | en-gb | Enterprise" -ForegroundColor Green
 Write-Host "7: Zero-Touch WIN11 22H2 | en-gb | Education" -ForegroundColor Yellow
 Write-Host "8: Zero-Touch WIN11 22H2 | en-gb | Enterprise" -ForegroundColor Green
-Write-Host "9: OSDCloudGUI" -ForegroundColor Magenta
+Write-Host "9: OSDCloudGUI" -ForegroundColor Cyan
 Write-Host "0: Exit" -ForegroundColor Red
 $input = Read-Host "Please make a selection"
 Write-Host  -ForegroundColor Yellow "Loading OSDCloud..."
