@@ -38,7 +38,7 @@ switch ($input)
     '6' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 21H2 x64' -OSEdition Enterprise -ZTI } 
     '7' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 22H2 x64' -OSEdition Education -ZTI }
     '8' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 22H2 x64' -OSEdition Enterprise -ZTI } 
-    '9' { Start-OSDCloudGUI	} 
+    '9' { Start-OSDCloudGUI	-Brand 'NOVUS'} 
     '0' { Exit }
 }
 
