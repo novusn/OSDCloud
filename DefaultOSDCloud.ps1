@@ -8,15 +8,13 @@ if ((Get-MyComputerModel) -match 'Virtual') {
 }
 cls
 Write-Host "===================== Main Menu ======================="
-Write-Host "1: Zero-Touch WIN10 21H2 | en-gb | Education"-ForegroundColor Yellow
-Write-Host "2: Zero-Touch WIN10 21H2 | en-gb | Enterprise"-ForegroundColor Green
-Write-Host "3: Zero-Touch WIN10 22H2 | en-gb | Education" -ForegroundColor Yellow
-Write-Host "4: Zero-Touch WIN10 22H2 | en-gb | Enterprise" -ForegroundColor Green
-Write-Host "5: Zero-Touch WIN11 21H2 | en-gb | Education" -ForegroundColor Yellow
-Write-Host "6: Zero-Touch WIN11 21H2 | en-gb | Enterprise" -ForegroundColor Green
-Write-Host "7: Zero-Touch WIN11 22H2 | en-gb | Education" -ForegroundColor Yellow
-Write-Host "8: Zero-Touch WIN11 22H2 | en-gb | Enterprise" -ForegroundColor Green
-Write-Host "9: OSDCloudGUI" -ForegroundColor Cyan
+Write-Host "1: Zero-Touch WIN10 22H2 | en-gb | Education" -ForegroundColor Yellow
+Write-Host "2: Zero-Touch WIN10 22H2 | en-gb | Enterprise" -ForegroundColor Green
+Write-Host "3: Zero-Touch WIN11 22H2 | en-gb | Education" -ForegroundColor Yellow
+Write-Host "4: Zero-Touch WIN11 22H2 | en-gb | Enterprise" -ForegroundColor Green
+Write-Host "5: Zero-Touch WIN11 23H2 | en-gb | Education" -ForegroundColor Yellow
+Write-Host "6: Zero-Touch WIN11 23H2 | en-gb | Enterprise" -ForegroundColor Green
+Write-Host "7: OSDCloudGUI" -ForegroundColor Cyan
 Write-Host "0: Exit" -ForegroundColor Red
 $input = Read-Host "Please make a selection"
 Write-Host  -ForegroundColor Yellow "Loading OSDCloud..."
@@ -30,15 +28,13 @@ Import-Module OSD -Force
 
 switch ($input)
 {
-    '1' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 10 21H2 x64' -OSEdition Education -ZTI } 
-    '2' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 10 21H2 x64' -OSEdition Enterprise -ZTI } 
-    '3' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 10 22H2 x64' -OSEdition Education -ZTI } 
-    '4' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 10 22H2 x64' -OSEdition Enterprise -ZTI } 
-    '5' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 21H2 x64' -OSEdition Education -ZTI }
-    '6' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 21H2 x64' -OSEdition Enterprise -ZTI } 
-    '7' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 22H2 x64' -OSEdition Education -ZTI }
-    '8' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 22H2 x64' -OSEdition Enterprise -ZTI } 
-    '9' { Start-OSDCloudGUI	-Brand 'NOVUS'} 
+    '1' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 10 22H2 x64' -OSEdition Education -ZTI } 
+    '2' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 10 22H2 x64' -OSEdition Enterprise -ZTI } 
+    '3' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 22H2 x64' -OSEdition Education -ZTI }
+    '4' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 22H2 x64' -OSEdition Enterprise -ZTI } 
+    '5' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 23H2 x64' -OSEdition Education -ZTI }
+    '6' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 23H2 x64' -OSEdition Enterprise -ZTI } 
+    '7' { Start-OSDCloudGUI	-Brand 'NOVUS'} 
     '0' { Exit }
 }
 
