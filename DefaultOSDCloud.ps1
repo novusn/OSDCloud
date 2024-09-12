@@ -39,6 +39,33 @@ switch ($input)
     '0' { Exit }
 }
 
+#Run Local Autopilot Registration Script
+# Check if the directory exists
+$FolderPath = "E:\OSDCloud\NOVUS"
+if (Test-Path -Path $FolderPath) {
+    Write-Host "Directory exists: $FolderPath"
+
+    # Prompt for the computer name
+    $OSDComputerName = Read-Host "Please specify the computer name"
+
+    # Prompt for the GroupTag
+    $Tag = Read-Host "Please specify the GroupTag"
+
+    # Run the AutopilotRegistration.ps1 script with the variables
+    $ScriptPath = "$FolderPath\AutopilotRegistration.ps1"
+    
+    if (Test-Path -Path $ScriptPath) {
+        Write-Host "Running AutopilotRegistration.ps1 script..."
+
+        # Pass the variables as parameters to the script
+        & $ScriptPath -OSDComputerName $OSDComputerName -Tag $Tag
+    } else {
+        Write-Error "Script not found: $ScriptPath"
+    }
+} else {
+    
+}
+
 #Restart from WinPE
 Write-Host  -ForegroundColor Cyan "Restarting in 20 seconds!"
 Start-Sleep -Seconds 20
