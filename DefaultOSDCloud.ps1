@@ -26,6 +26,9 @@ Install-Module OSD -Force
 
 Write-Host  -ForegroundColor Cyan "Importing PowerShell Modules"
 Import-Module OSD -Force
+$OSDModuleResource.StartOSDCloudGUI.BrandName = 'NOVUS'
+$OSDModuleResource.StartOSDCloudGUI.BrandColor = '#F8AE45'
+$OSDModuleResource.StartOSDCloudGUI.updateFirmware = $true
 
 switch ($input)
 {
@@ -36,7 +39,7 @@ switch ($input)
     '5' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 23H2 x64' -OSEdition Education -ZTI }
     '6' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 23H2 x64' -OSEdition Enterprise -ZTI } 
     '7' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 23H2 x64' -OSEdition Professional -ZTI } 
-    '8' { Start-OSDCloudGUI	-Brand 'CAE'} 
+    '8' { Start-OSDCloudGUI	-Brand 'NOVUS'} 
     '0' { Exit }
 }
 
