@@ -13,7 +13,10 @@ Write-Host "2: Zero-Touch WIN10 22H2 | en-gb | Enterprise" -ForegroundColor Gree
 Write-Host "3: Zero-Touch WIN11 23H2 | en-gb | Education" -ForegroundColor Yellow
 Write-Host "4: Zero-Touch WIN11 23H2 | en-gb | Enterprise" -ForegroundColor Green
 Write-Host "5: Zero-Touch WIN11 23H2 | en-gb | Professional" -ForegroundColor Magenta
-Write-Host "6: OSDCloudGUI" -ForegroundColor Cyan
+Write-Host "6: Zero-Touch WIN11 24H2 | en-gb | Education" -ForegroundColor Yellow
+Write-Host "7: Zero-Touch WIN11 24H2 | en-gb | Enterprise" -ForegroundColor Green
+Write-Host "8: Zero-Touch WIN11 24H2 | en-gb | Professional" -ForegroundColor Magenta
+Write-Host "9: OSDCloudGUI" -ForegroundColor Cyan
 Write-Host "0: Exit" -ForegroundColor Red
 $input = Read-Host "Please make a selection"
 Write-Host  -ForegroundColor Yellow "Loading OSDCloud..."
@@ -35,7 +38,10 @@ switch ($input)
     '3' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 23H2 x64' -OSEdition Education -ZTI }
     '4' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 23H2 x64' -OSEdition Enterprise -ZTI } 
     '5' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 23H2 x64' -OSEdition Professional -ZTI } 
-    '6' { Start-OSDCloudGUI	-Brand 'NOVUS'} 
+    '6' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 24H2 x64' -OSEdition Education -ZTI }
+    '7' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 24H2 x64' -OSEdition Enterprise -ZTI } 
+    '8' { Start-OSDCloud -OSLanguage en-gb -OSName 'Windows 11 24H2 x64' -OSEdition Professional -ZTI } 
+    '9' { Start-OSDCloudGUI	-Brand 'NOVUS'} 
     '0' { Exit }
 }
 
