@@ -26,15 +26,11 @@ Write-Host -ForegroundColor Cyan "Checking DISM Module"
 
 try {
     Import-Module DISM -Force -ErrorAction Stop
-    Get-Command Get-WindowsImage -ErrorAction Stop
-    Write-Host -ForegroundColor Green "DISM Module loaded successfully"
 }
 catch {
-    Write-Host -ForegroundColor Red "DISM Module failed to load"
-    Write-Host -ForegroundColor Red $_.Exception.Message
-    Write-Host -ForegroundColor Yellow $_.ScriptStackTrace
-    Read-Host "Press Enter to exit"
-    exit
+    $_ | Format-List * -Force
+    $_.Exception.ToString()
+    $_.Exception.InnerException
 }
 
 #Make sure I have the latest OSD Content
