@@ -1,101 +1,97 @@
 # ============================================================
-# NOVUS OSDCloud - DISM .NET Bootstrap
-# Compatible with Invoke-WebPSScript
+# NOVUS OSDCloud - DISM .NET Fix
 # ============================================================
 
-$ErrorActionPreference = 'Stop'
-
+$scriptUrl = 'https://raw.githubusercontent.com/novusn/OSDCloud/main/DefaultOSDCloud.ps1'
 $configPath = Join-Path $PSHOME 'powershell.exe.config'
-$restartMarker = 'NOVUS_OSD_CONFIG_RESTARTED'
 
-try {
-    Write-Host "Checking DISM .NET configuration..." -ForegroundColor Cyan
+# Prevent a second launch from repeating the bootstrap
+if ($env:NOVUS_OSD_CHILD -ne '1') {
 
-    if (Test-Path $configPath) {
-        [xml]$configXml = Get-Content $configPath -Raw
-    }
-    else {
-        $configXml = New-Object System.Xml.XmlDocument
-        $configXml.LoadXml('<configuration/>')
-    }
+    try {
+        Write-Host "Checking PowerShell .NET configuration..." -ForegroundColor Cyan
 
-    $runtime = $configXml.SelectSingleNode('/configuration/runtime')
+        if (Test-Path $configPath) {
+            [xml]$xml = Get-Content $configPath -Raw
+        }
+        else {
+            $xml = New-Object System.Xml.XmlDocument
+            $xml.LoadXml('<configuration/>')
+        }
 
-    if ($null -eq $runtime) {
-        $runtime = $configXml.CreateElement('runtime')
-        [void]$configXml.DocumentElement.AppendChild($runtime)
-    }
+        $runtime = $xml.SelectSingleNode('/configuration/runtime')
 
-    $remoteSources = $runtime.SelectSingleNode('loadFromRemoteSources')
-    $configChanged = $false
+        if ($null -eq $runtime) {
+            $runtime = $xml.CreateElement('runtime')
+            [void]$xml.DocumentElement.AppendChild($runtime)
+        }
 
-    if ($null -eq $remoteSources) {
-        $remoteSources = $configXml.CreateElement('loadFromRemoteSources')
-        [void]$runtime.AppendChild($remoteSources)
-        $configChanged = $true
-    }
+        $setting = $runtime.SelectSingleNode('loadFromRemoteSources')
 
-    if ($remoteSources.GetAttribute('enabled') -ne 'true') {
-        $remoteSources.SetAttribute('enabled', 'true')
-        $configChanged = $true
-    }
+        if ($null -eq $setting) {
+            $setting = $xml.CreateElement('loadFromRemoteSources')
+            [void]$runtime.AppendChild($setting)
+        }
 
-    if ($configChanged -or -not (Test-Path $configPath)) {
-        $configXml.Save($configPath)
+        $setting.SetAttribute('enabled', 'true')
+        $xml.Save($configPath)
 
         Write-Host ".NET configuration updated." -ForegroundColor Green
 
-        if ([Environment]::GetEnvironmentVariable(
-            $restartMarker, 'Process'
-        ) -eq '1') {
-            throw 'PowerShell configuration still changing after restart.'
-        }
-
-        [Environment]::SetEnvironmentVariable(
-            $restartMarker, '1', 'Process'
-        )
-
-        Write-Host "Launching new PowerShell process..." -ForegroundColor Yellow
-
-        # Download central script to a local file
-        $scriptUrl = 'https://raw.githubusercontent.com/novusn/OSDCloud/main/DefaultOSDCloud.ps1'
+        # Download the central deployment script
         $localScript = 'X:\NOVUS-OSDCloud.ps1'
 
-        Invoke-WebRequest -Uri $scriptUrl -OutFile $localScript -UseBasicParsing
+        Invoke-WebRequest -Uri $scriptUrl -OutFile $localScript -UseBasicParsing -ErrorAction Stop
 
-        # Launch in a new PowerShell process, which reads the new .NET config
-        $powerShellExe = Join-Path $PSHOME 'powershell.exe'
+        # Mark the new process as the deployment process
+        $env:NOVUS_OSD_CHILD = '1'
 
-        & $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $localScript
+        Write-Host "Launching NOVUS deployment PowerShell..." -ForegroundColor Yellow
 
-        exit $LASTEXITCODE
+        # Start another PowerShell window without closing this one
+        $child = Start-Process `
+            -FilePath (Join-Path $PSHOME 'powershell.exe') `
+            -ArgumentList @(
+                '-NoProfile',
+                '-NoExit',
+                '-ExecutionPolicy',
+                'Bypass',
+                '-File',
+                $localScript
+            ) `
+            -PassThru
+
+        Write-Host "Deployment PowerShell launched (PID $($child.Id))." -ForegroundColor Green
+        Write-Host "This window is the bootstrap session."
+
+        # Stop executing the deployment menu in this process.
+        # This does not terminate the new PowerShell window.
+        return
     }
-
-    Write-Host ".NET configuration ready." -ForegroundColor Green
-}
-catch {
-    Write-Host "Bootstrap failed:" -ForegroundColor Red
-    Write-Host $_.Exception.ToString() -ForegroundColor Red
-    Read-Host "Press Enter to exit"
-    exit 1
+    catch {
+        Write-Host "NOVUS bootstrap failed:" -ForegroundColor Red
+        Write-Host $_.Exception.ToString() -ForegroundColor Red
+        Read-Host "Press Enter to continue"
+        return
+    }
 }
 
 # ============================================================
-# VALIDATE DISM
+# SECOND POWERSHELL PROCESS CONTINUES HERE
 # ============================================================
+
+Write-Host "Validating DISM PowerShell module..." -ForegroundColor Cyan
 
 try {
     Import-Module DISM -Force -ErrorAction Stop
     Get-Command Get-WindowsImage -ErrorAction Stop | Out-Null
-
     Write-Host "DISM PowerShell module loaded successfully." -ForegroundColor Green
 }
 catch {
     Write-Host "DISM PowerShell module failed:" -ForegroundColor Red
     Write-Host $_.Exception.ToString() -ForegroundColor Red
-
-    Read-Host "Press Enter to exit"
-    exit 1
+    Read-Host "Press Enter to continue"
+    return
 }
 
 # ------------------------------------------------------------
