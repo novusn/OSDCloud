@@ -25,12 +25,18 @@ Write-Host  -ForegroundColor Yellow "Loading OSDCloud..."
 Write-Host -ForegroundColor Cyan "Checking DISM Module"
 
 try {
-    Import-Module DISM -Force -ErrorAction Stop
+    Import-Module DISM -ErrorAction Stop
 }
 catch {
-    $_ | Format-List * -Force
-    $_.Exception.ToString()
-    $_.Exception.InnerException
+    $ex = $_.Exception
+
+    while ($null -ne $ex) {
+        Write-Host "TYPE: $($ex.GetType().FullName)"
+        Write-Host "MESSAGE: $($ex.Message)"
+        Write-Host "HRESULT: $($ex.HResult)"
+        Write-Host "--------------------------"
+        $ex = $ex.InnerException
+    }
 }
 
 #Make sure I have the latest OSD Content
