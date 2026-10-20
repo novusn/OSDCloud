@@ -1,17 +1,15 @@
 # ============================================================
-# NOVUS OSDCloud Deployment Menu
-# Includes DISM .NET Assembly Loading Fix
+# NOVUS OSDCloud - DISM .NET Bootstrap
+# Compatible with Invoke-WebPSScript
 # ============================================================
 
-# ------------------------------------------------------------
-# 1. FIX DISM .NET ASSEMBLY LOADING
-# ------------------------------------------------------------
+$ErrorActionPreference = 'Stop'
 
-$configPath = Join-Path $PSHOME "powershell.exe.config"
-$restartMarker = "NOVUS_OSD_CONFIG_RESTARTED"
+$configPath = Join-Path $PSHOME 'powershell.exe.config'
+$restartMarker = 'NOVUS_OSD_CONFIG_RESTARTED'
 
 try {
-    Write-Host "Checking PowerShell .NET configuration..." -ForegroundColor Cyan
+    Write-Host "Checking DISM .NET configuration..." -ForegroundColor Cyan
 
     if (Test-Path $configPath) {
         [xml]$configXml = Get-Content $configPath -Raw
@@ -21,76 +19,79 @@ try {
         $configXml.LoadXml('<configuration/>')
     }
 
-    $runtime = $configXml.SelectSingleNode("/configuration/runtime")
+    $runtime = $configXml.SelectSingleNode('/configuration/runtime')
 
     if ($null -eq $runtime) {
-        $runtime = $configXml.CreateElement("runtime")
+        $runtime = $configXml.CreateElement('runtime')
         [void]$configXml.DocumentElement.AppendChild($runtime)
     }
 
-    $remoteSources = $runtime.SelectSingleNode("loadFromRemoteSources")
+    $remoteSources = $runtime.SelectSingleNode('loadFromRemoteSources')
     $configChanged = $false
 
     if ($null -eq $remoteSources) {
-        $remoteSources = $configXml.CreateElement("loadFromRemoteSources")
+        $remoteSources = $configXml.CreateElement('loadFromRemoteSources')
         [void]$runtime.AppendChild($remoteSources)
         $configChanged = $true
     }
 
-    if ($remoteSources.GetAttribute("enabled") -ne "true") {
-        $remoteSources.SetAttribute("enabled", "true")
+    if ($remoteSources.GetAttribute('enabled') -ne 'true') {
+        $remoteSources.SetAttribute('enabled', 'true')
         $configChanged = $true
     }
 
     if ($configChanged -or -not (Test-Path $configPath)) {
         $configXml.Save($configPath)
-        Write-Host ".NET configuration updated successfully." -ForegroundColor Green
 
-        if ([Environment]::GetEnvironmentVariable($restartMarker, "Process") -eq "1") {
-            throw "Configuration changed again after restarting PowerShell."
+        Write-Host ".NET configuration updated." -ForegroundColor Green
+
+        if ([Environment]::GetEnvironmentVariable(
+            $restartMarker, 'Process'
+        ) -eq '1') {
+            throw 'PowerShell configuration still changing after restart.'
         }
 
-        [Environment]::SetEnvironmentVariable($restartMarker, "1", "Process")
+        [Environment]::SetEnvironmentVariable(
+            $restartMarker, '1', 'Process'
+        )
 
-        Write-Host "Restarting PowerShell to apply changes..." -ForegroundColor Yellow
+        Write-Host "Launching new PowerShell process..." -ForegroundColor Yellow
 
-        # Relaunch the central script in a fresh PowerShell process.
-        # The script must be invoked using a real script path.
-        if ([string]::IsNullOrWhiteSpace($PSCommandPath)) {
-            throw "Cannot restart automatically: no script path is available."
-        }
+        # Download central script to a local file
+        $scriptUrl = 'https://raw.githubusercontent.com/novusn/OSDCloud/main/DefaultOSDCloud.ps1'
+        $localScript = 'X:\NOVUS-OSDCloud.ps1'
 
-        $powerShellExe = Join-Path $PSHOME "powershell.exe"
+        Invoke-WebRequest -Uri $scriptUrl -OutFile $localScript -UseBasicParsing
 
-        & $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $PSCommandPath
+        # Launch in a new PowerShell process, which reads the new .NET config
+        $powerShellExe = Join-Path $PSHOME 'powershell.exe'
+
+        & $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $localScript
 
         exit $LASTEXITCODE
     }
 
-    Write-Host ".NET remote assembly loading enabled." -ForegroundColor Green
+    Write-Host ".NET configuration ready." -ForegroundColor Green
 }
 catch {
-    Write-Host "Failed to configure PowerShell .NET settings:" -ForegroundColor Red
-    Write-Host $_.Exception.Message -ForegroundColor Red
+    Write-Host "Bootstrap failed:" -ForegroundColor Red
+    Write-Host $_.Exception.ToString() -ForegroundColor Red
     Read-Host "Press Enter to exit"
     exit 1
 }
 
-# ------------------------------------------------------------
-# 2. VALIDATE DISM POWERSHELL MODULE
-# ------------------------------------------------------------
-
-Write-Host "Checking DISM PowerShell module..." -ForegroundColor Cyan
+# ============================================================
+# VALIDATE DISM
+# ============================================================
 
 try {
     Import-Module DISM -Force -ErrorAction Stop
-
     Get-Command Get-WindowsImage -ErrorAction Stop | Out-Null
 
     Write-Host "DISM PowerShell module loaded successfully." -ForegroundColor Green
 }
 catch {
-    Write-Host "DISM PowerShell module failed to load." -ForegroundColor Red
+    Write-Host "DISM PowerShell module failed:" -ForegroundColor Red
     Write-Host $_.Exception.ToString() -ForegroundColor Red
 
     Read-Host "Press Enter to exit"
